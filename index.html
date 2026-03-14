@@ -1,72 +1,182 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="hu">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Mersh Store</title>
     <style>
-        /* Minimalista alapok */
+        :root {
+            --primary: #bfff00; /* Lime */
+            --bg: #000000;
+            --card-bg: #111111;
+        }
+
         body {
             margin: 0;
             padding: 0;
-            background-color: #000000; /* Fekete */
-            color: #bfff00; /* Lime */
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background-color: var(--bg);
+            color: white;
+            font-family: 'Inter', -apple-system, sans-serif;
             display: flex;
-            justify-content: center;
+            flex-direction: column;
             align-items: center;
-            height: 100vh;
-            overflow: hidden;
+            min-height: 100vh;
         }
 
-        /* Nyelvváltó a sarokban */
         .lang-picker {
             position: absolute;
             top: 20px;
             right: 20px;
+            z-index: 100;
         }
 
         select {
-            background: transparent;
-            color: #bfff00;
-            border: 1px solid #bfff00;
-            padding: 5px;
+            background: #111;
+            color: var(--primary);
+            border: 1px solid var(--primary);
+            padding: 8px 12px;
+            border-radius: 6px;
             cursor: pointer;
             outline: none;
+        }
+
+        .hero-container {
+            width: 100%;
+            padding: 60px 0 40px 0;
+            display: flex;
+            justify-content: center;
+            background: linear-gradient(to bottom, #151515, #000);
+        }
+
+        .main-buy-btn {
+            padding: 18px 40px;
+            background-color: var(--primary);
+            color: black;
+            text-decoration: none;
+            font-weight: 900;
+            font-size: 1.3rem;
+            text-transform: uppercase;
+            border-radius: 8px;
+            transition: 0.3s;
+            box-shadow: 0 0 20px rgba(191, 255, 0, 0.2);
+        }
+
+        .main-buy-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 30px rgba(191, 255, 0, 0.4);
+        }
+
+        .product-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 30px;
+            width: 95%;
+            max-width: 1200px;
+            padding: 20px;
+        }
+
+        @media (max-width: 950px) {
+            .product-grid { grid-template-columns: repeat(2, 1fr); }
+        }
+
+        @media (max-width: 650px) {
+            .product-grid { grid-template-columns: 1fr; }
+        }
+
+        .product-card {
+            background: var(--card-bg);
+            border-radius: 24px;
+            border: 1px solid #222;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            transition: 0.3s ease;
+        }
+
+        .product-card:hover {
+            border-color: var(--primary);
+            transform: translateY(-8px);
+        }
+
+        .img-container {
+            width: 100%;
+            height: 450px;
+            background: #ffffff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+        }
+
+        .img-container img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover; 
+            transition: transform 0.5s ease;
+        }
+
+        /* EGYEDI ZOOM A MEZNEK */
+        .zoom-jersey {
+            transform: scale(1.4); 
+            object-position: center 15%; 
+        }
+
+        /* NORMÁL NÉZET A NADRÁGNAK */
+        .zoom-pants {
+            transform: scale(1.0); 
+            object-position: center center;
+        }
+
+        .product-card:hover img.zoom-jersey { transform: scale(1.5); }
+        .product-card:hover img.zoom-pants { transform: scale(1.05); }
+
+        .card-info {
+            padding: 30px;
+            text-align: center;
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .card-info h3 {
+            margin: 0 0 10px 0;
+            color: var(--primary);
+            font-size: 1.4rem;
+        }
+
+        .card-info p {
+            font-size: 1rem;
+            color: #ccc;
+            margin-bottom: 25px;
+        }
+
+        .sub-btn {
+            display: inline-block;
+            padding: 14px 28px;
+            background-color: white;
+            color: black;
+            text-decoration: none;
+            font-weight: 800;
+            border-radius: 10px;
+            transition: 0.2s;
+            text-transform: uppercase;
             font-size: 0.9rem;
         }
 
-        /* A központi gomb */
-        .buy-btn {
-            display: inline-block;
-            padding: 20px 40px;
-            background-color: #bfff00; /* Lime */
-            color: #000000; /* Fekete szöveg */
-            text-decoration: none;
+        .sub-btn:hover { background-color: var(--primary); }
+
+        .coming-soon .img-container {
+            background: #0a0a0a;
+            color: #222;
+            font-size: 2rem;
             font-weight: 900;
-            font-size: 1.5rem;
-            text-transform: uppercase;
-            letter-spacing: -1px;
-            border-radius: 4px;
-            transition: all 0.3s ease;
-            border: 2px solid #bfff00;
-        }
-
-        .buy-btn:hover {
-            background-color: #000000;
-            color: #bfff00;
-            box-shadow: 0 0 20px rgba(191, 255, 0, 0.4);
-            transform: translateY(-3px);
-        }
-
-        .buy-btn:active {
-            transform: translateY(0);
+            letter-spacing: 2px;
         }
     </style>
 </head>
 <body>
 
-    <!-- Nyelvválasztó -->
     <div class="lang-picker">
         <select id="langSwitch" onchange="updateLanguage()">
             <option value="en">English</option>
@@ -74,24 +184,129 @@
         </select>
     </div>
 
-    <!-- Gomb -->
-    <a href="https://www.vinted.com/member/177769180" class="buy-btn" id="mainBtn">
-        Buy our merch
-    </a>
+    <div class="hero-container">
+        <a href="https://www.vinted.com/member/177769180" class="main-buy-btn" id="mainBtn">Buy our merch</a>
+    </div>
+
+    <div class="product-grid">
+        
+                <!-- TRAPSTAR MEZ -->
+        <div class="product-card">
+            <div class="img-container">
+                <a href="https://www.vinted.com/items/8385258848-trapstar-london-monogram-football-jersey" target="_blank">
+                    <img src="https://images1.vinted.net/t/06_025aa_vXuDCQuYHTtwdfHXPaq7b4Bm/f800/1773423381.webp?s=190e5bb8e8638ec07b8b93ea5a8f236c396da02b" class="zoom-jersey" alt="Trapstar Jersey">
+                </a>
+            </div>
+            <div class="card-info">
+                <h3 data-en="Trapstar Jersey" data-hu="Trapstar Mez">Trapstar Jersey</h3>
+                <p>
+                    <span data-en="Size: S" data-hu="Méret: S">Size: S</span><br>
+                    <strong data-en="Price: $24.68" data-hu="Ár: 7 990 Ft">Price: $24.68</strong>
+                </p>
+                <a href="https://www.vinted.com/items/8385258848-trapstar-london-monogram-football-jersey" class="sub-btn" data-en="Buy Now" data-hu="Megveszem">Buy Now</a>
+            </div>
+        </div>
+
+        <!-- DENIM TEARS PANTS -->
+        <div class="product-card">
+            <div class="img-container">
+                <a href="https://www.vinted.com/items/8371240738-denim-tears-pants" target="_blank">
+                    <img src="https://images1.vinted.net/t/06_01ed2_Ax5ANAjaHCZUF5Bb4bhqeo4k/f800/1773343061.webp?s=de69b28696d549b624f0d16baf2497dc2d359ead" class="zoom-pants" alt="Denim Tears Pants">
+                </a>
+            </div>
+            <div class="card-info">
+                <h3 data-en="Denim Tears Pants" data-hu="Denim Tears Nadrág">Denim Tears Pants</h3>
+                <p>
+                    <span data-en="Size: M" data-hu="Méret: M">Size: M</span><br>
+                    <strong data-en="Price: $21.59" data-hu="Ár: 6 990 Ft">Price: $21.59</strong>
+                </p>
+                <a href="https://www.vinted.com/items/8371240738-denim-tears-pants" class="sub-btn" data-en="Buy Now" data-hu="Megveszem">Buy Now</a>
+            </div>
+        </div>
+
+        <!-- NIKE TN AIR MAX BEIGE -->
+        <div class="product-card">
+            <div class="img-container">
+                <a href="https://www.vinted.com/items/8375976406-nike-tn-air-max-beige" target="_blank">
+                    <img src="https://images1.vinted.net/t/01_024c8_5hY6f7fThXyH5xTJ3V81fFtM/f800/1773342894.webp?s=055c474d262083c35e0f6b8620e3b6eee18d06e8" class="zoom-pants" alt="Nike TN Air Max Beige">
+                </a>
+            </div>
+            <div class="card-info">
+                <h3 data-en="Nike TN Air Max Beige" data-hu="Nike TN Air Max Beige">Nike TN Air Max Beige</h3>
+                <p>
+                    <span data-en="Size: 41 EUR" data-hu="Méret: 41 EUR">Size: 41</span><br>
+                    <strong data-en="Price: $77.18" data-hu="Ár: 24 990Ft">Price: $77.18</strong>
+                </p>
+                <a href="https://www.vinted.com/items/8375976406-nike-tn-air-max-beige" class="sub-btn" data-en="Buy Now" data-hu="Megveszem">Buy Now</a>
+            </div>
+        </div>
+
+        <!-- Corteiz 5 Star Cap Pink -->
+        <div class="product-card">
+            <div class="img-container">
+                <a href="https://www.vinted.com/items/8371229179-corteiz-5-star-cap-pink" target="_blank">
+                    <img src="https://images1.vinted.net/t/04_0101d_6NjNxuX64j1ZCQNk9QyhV2Gx/f800/1773255979.webp?s=85a954981a8af74562b35d142b884b7f0485dcf7" class="zoom-pants" alt="Nike TN Air Max Beige">
+                </a>
+            </div>
+            <div class="card-info">
+                <h3 data-en="Corteiz 5 Star Cap Pink" data-hu="Corteiz 5 Star Sapka Rózsaszín">Corteiz 5 Star Cap Pink</h3>
+                <p>
+                    <span data-en=" Size:55-60 Cm" data-hu="Méret: 55-60 Cm ">Size: 55-60 Cm</span><br>
+                    <strong data-en="Price: $21.59" data-hu="Ár: 6 990Ft">Price: $21.59</strong>
+                </p>
+                <a href="https://www.vinted.com/items/8371229179-corteiz-5-star-cap-pink" class="sub-btn" data-en="Buy Now" data-hu="Megveszem">Buy Now</a>
+            </div>
+        </div>
+        
+        <!-- Sprayground Táska -->
+        <div class="product-card">
+            <div class="img-container">
+                <a href="https://www.vinted.com/items/8374295648-sprayground-taska" target="_blank">
+                    <img src="https://images1.vinted.net/t/05_0065a_rs3uvKCoar6C7urarrHtWFEF/f800/1773311952.webp?s=a7e249dc5225e0b086a0fb05efbda996145159b9" class="zoom-pants" alt="Nike TN Air Max Beige">
+                </a>
+            </div>
+            <div class="card-info">
+                <h3 data-en="Sprayground Backpack" data-hu="Sprayground Táska">Sprayground Backpack</h3>
+                <p>
+                    <span data-en=" Size: Changable" data-hu="Méret: Változtatható">Size: Changeable</span><br>
+                    <strong data-en="Price: $34.34" data-hu="Ár: 11 118Ft">Price: $34.34</strong>
+                </p>
+                <a href="https://www.vinted.com/items/8374295648-sprayground-taska" class="sub-btn" data-en="Buy Now" data-hu="Megveszem">Buy Now</a>
+            </div>
+        </div>
+
+        <!-- Denim Tears Set -->
+        <div class="product-card">
+            <div class="img-container">
+                <a href="https://www.vinted.com/items/8371207459-denim-tears-tracksuit" target="_blank">
+                    <img src="https://images1.vinted.net/t/05_00f7d_Z5tfXokMxKniSyCwLno3rbjq/f800/1773255817.webp?s=2299e0bf492c1e0d4f6372475c88395c6f13a1ec" class="zoom-pants" alt="Nike TN Air Max Beige">
+                </a>
+            </div>
+            <div class="card-info">
+                <h3 data-en="Denim Tears Set" data-hu="Denim Tears Szett">Denim Tears Set</h3>
+                <p>
+                    <span data-en=" Size: M" data-hu="Méret: M">Méret: M</span><br>
+                    <strong data-en="Price: $52.47" data-hu="Ár: 16 990Ft">Price: $52.47</strong>
+                </p>
+                <a href="https://www.vinted.com/items/8371207459-denim-tears-tracksuit" class="sub-btn" data-en="Buy Now" data-hu="Megveszem">Buy Now</a>
+            </div>
+        </div>
+
+
+
+    </div>
 
     <script>
         function updateLanguage() {
             const lang = document.getElementById('langSwitch').value;
-            const btn = document.getElementById('mainBtn');
-            
-            if (lang === 'hu') {
-                btn.innerText = 'Vedd meg a ruháinkat';
-            } else {
-                btn.innerText = 'Buy our merch';
-            }
+            const mainBtn = document.getElementById('mainBtn');
+            mainBtn.innerText = lang === 'hu' ? 'Vedd meg a ruháinkat' : 'Buy our merch';
+
+            document.querySelectorAll('[data-en]').forEach(el => {
+                el.innerText = el.getAttribute(`data-${lang}`);
+            });
         }
     </script>
 
 </body>
 </html>
-<title>Mersh Store 🚀</title>
