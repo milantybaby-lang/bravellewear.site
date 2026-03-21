@@ -7,6 +7,49 @@
 	<title>Bravellewear Store</title>
 
 	<style>
+		@media (max-width: 650px) {
+
+		.product-grid {
+			grid-template-columns: repeat(2, 1fr);
+			gap: 12px;
+			padding: 100px 10px 10px 10px;
+
+			/* SCROLL SNAP */
+			scroll-snap-type: y mandatory;
+			overflow-y: scroll;
+			height: 100vh;
+		}
+
+		.product-card {
+			border-radius: 16px;
+
+			/* SNAP minden sorra */
+			scroll-snap-align: start;
+		}
+
+		.img-container {
+			height: 220px; /* kisebb képek */
+		}
+
+		.card-info {
+			padding: 15px;
+		}
+
+		.card-info h3 {
+			font-size: 1rem;
+		}
+
+		.card-info p {
+			font-size: 0.8rem;
+			margin-bottom: 10px;
+		}
+
+		.sub-btn {
+			padding: 10px;
+			font-size: 0.7rem;
+		}
+	}
+
 		:root {
 			--primary: #ff0000;
 			--bg: #000000;
