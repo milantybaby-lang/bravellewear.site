@@ -205,19 +205,24 @@
 
 
 		@media (max-width: 768px) {
+			/* A szülő konténeren (lehet body vagy egy wrapper div) */
 			html, body {
-				/* A proximity csak akkor ránt be, ha már NAGYON közel vagy a célhoz */
-				scroll-snap-type: y proximity; 
+				scroll-snap-type: y mandatory; /* Kötelező megállás */
 				scroll-behavior: smooth;
+				overflow-y: scroll;
+				height: 100%;
 			}
 
 			.product-card {
-				scroll-snap-align: center;
-				/* Kikapcsoljuk a kényszerített megállást, így simább az átmenet */
-				scroll-snap-stop: normal; 
-				margin-bottom: 20px; /* Kell egy kis hely a kártyák közt, hogy ne akadjanak össze */
+				scroll-snap-align: center; /* Mindig középre igazít */
+				scroll-snap-stop: always;  /* 🔥 EZ A KULCS: nem engedi átugrani a kártyákat gyors görgetésnél sem */
+				
+				/* Kell egy kis biztonsági távolság */
+				margin-bottom: 50px; 
+				min-height: 300px; /* Vagy amekkora a kártyád */
 			}
 		}
+
 	</style>
 </head>
 
@@ -401,33 +406,23 @@
 
 		if (isMobile) {
 			const cards = document.querySelectorAll('.product-card');
-			let lastScrollTop = 0;
-
+			
 			const observer = new IntersectionObserver((entries) => {
 				entries.forEach(entry => {
-					const st = window.pageYOffset || document.documentElement.scrollTop;
-					const scrollingDown = st > lastScrollTop;
-
-					if (entry.isIntersecting) {
-						// Csak akkor váltunk és snap-elünk, ha az adott irányba haladsz
-						// és a kártya legalább 50%-a már bent van
+					// Csak akkor aktiváljuk, ha a kártya nagy része (70%) látszik
+					if (entry.isIntersecting && entry.intersectionRatio >= 0.7) {
 						cards.forEach(c => c.classList.remove('active'));
 						entry.target.classList.add('active');
-						
-						// Finom snap: csak akkor húzza be, ha megálltál vagy lassulsz
-						entry.target.scrollIntoView({
-							behavior: "smooth",
-							block: "center"
-						});
 					}
-					lastScrollTop = st <= 0 ? 0 : st;
 				});
 			}, { 
-				threshold: 0.7 // Csak akkor reagál, ha a kártya fele már látszik
+				threshold: [0.1, 0.7], // Több küszöbérték a precizitáshoz
+				rootMargin: "-10% 0px -10% 0px" // Kicsit szűkítjük a figyelést középre
 			});
 
 			cards.forEach(card => observer.observe(card));
 		}
+
 	</script>
 </body>
 </html>
