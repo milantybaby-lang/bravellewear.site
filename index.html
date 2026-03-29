@@ -1,130 +1,432 @@
 <!DOCTYPE html>
 <html lang="hu">
+
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Bravellewear</title>
-<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
-<style>
-body { margin:0; font-family:'Montserrat',sans-serif; background:#0a0a0a; color:white;}
-header {text-align:center; padding:30px; font-size:32px; font-weight:bold; color:red; cursor:pointer; transition:transform 0.2s,color 0.2s;}
-header:hover {transform:scale(1.1); color:#ff5555;}
-.rating {text-align:center; margin-top:5px; font-size:16px; color:#ffd700;}
-.filters {text-align:center; margin:20px 0;}
-.filters button {background:#111; border:1px solid red; color:white; padding:8px 15px; margin:5px; border-radius:8px; cursor:pointer; transition:0.2s;}
-.filters button:hover, .filters button.active {background:red; color:white;}
-.products {display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:20px; padding:20px;}
-.card {position:relative; border-radius:15px; overflow:hidden; cursor:pointer; transition:transform 0.2s;}
-.card:hover {transform:scale(1.03);}
-.card img {width:100%; height:260px; object-fit:cover;}
-.overlay {position:absolute; bottom:0; width:100%; padding:15px; background:linear-gradient(transparent,black);}
-.badge {position:absolute; top:10px; left:10px; background:red; padding:5px 10px; font-size:12px; border-radius:8px;}
-.language-selector {position:fixed; top:15px; right:15px; background:#111; color:white; border:1px solid red; border-radius:8px; padding:5px 10px; cursor:pointer; z-index:1000;}
-.hero {position:relative; height:80vh; background:url('file:///C:/Users/Martin/Downloads/N%C3%A9vtelen%20terv%20(1).png') center/cover no-repeat; display:flex; align-items:center; justify-content:center; text-align:center;}
-.hero::after {content:""; position:absolute; inset:0; background:rgba(0,0,0,0.6);}
-.hero-content {position:relative; z-index:2;}
-.logo {width:110px; margin-bottom:20px;}
-.hero h1 {font-size:48px; margin:10px 0;}
-.hero p {opacity:0.8;}
-.hero button {margin-top:20px; padding:12px 25px; border:none; background:white; color:black; font-weight:bold; border-radius:8px; cursor:pointer;}
-</style>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Bravellewear Store</title>
+
+	<style>
+		:root {
+			--primary: #ff0000;
+			--bg: #000000;
+			--card-bg: #111111;
+		}
+
+		body {
+			margin: 0;
+			padding: 0;
+			background-color: var(--bg);
+			color: white;
+			font-family: 'Inter', -apple-system, sans-serif;
+			display: flex;
+			flex-direction: column;
+			align-items: center;
+			min-height: 100vh;
+		}
+
+		.lang-picker {
+			position: absolute;
+			top: 20px;
+			right: 20px;
+			z-index: 100;
+		}
+
+		select {
+			background: #111;
+			color: var(--primary);
+			border: 1px solid var(--primary);
+			padding: 8px 12px;
+			border-radius: 6px;
+			cursor: pointer;
+			outline: none;
+		}
+
+		/* OUR VINTED LINK */
+
+		.vinted-link {
+			position: absolute;
+			top: 50px;
+			left: 50%; /* A képernyő közepére teszi a bal szélét */
+			transform: translateX(-50%); /* Visszatolja a saját szélessége felével, így lesz pontos */
+				
+			font-size: 2rem;
+			font-weight: 900;
+			letter-spacing: 2px;
+			text-transform: uppercase;
+			color: #777;
+			text-decoration: none;
+			text-shadow: 0 0 10px rgba(255, 0, 0, 0.08);
+			transition: 0.25s;
+			z-index: 100;
+			display: flex;
+			justify-content: center;
+			align-items: center;
+		}
+
+
+		.vinted-link:hover {
+			color: #ff0000;
+			text-shadow: 0 0 15px rgba(255, 0, 0, 0.15);
+		}
+
+
+		/* PRODUCT GRID */
+
+		.product-grid {
+			display: grid;
+			grid-template-columns: repeat(3, 1fr);
+			gap: 30px;
+			width: 95%;
+			max-width: 1200px;
+			padding: 120px 20px 20px 20px;
+		}
+
+		@media (max-width: 950px) {
+			.product-grid {
+				grid-template-columns: repeat(2, 1fr);
+			}
+		}
+
+		@media (max-width: 650px) {
+			.product-grid {
+				grid-template-columns: 1fr;
+			}
+		}
+
+		.product-card {
+			background: var(--card-bg);
+			border-radius: 24px;
+			border: 1px solid #222;
+			overflow: hidden;
+			display: flex;
+			flex-direction: column;
+			transition: 0.3s ease;
+		}
+
+		.product-card:hover {
+			border-color: var(--primary);
+			transform: translateY(-8px);
+		}
+
+		.img-container {
+			width: 100%;
+			height: 450px;
+			background: #000;
+			display: flex;
+			justify-content: center;
+			align-items: center;
+			overflow: hidden;
+		}
+
+		.img-container img {
+			width: 100%;
+			height: 100%;
+			object-fit: cover;
+			transition: transform 0.5s ease;
+		}
+
+		.zoom-jersey {
+			transform: scale(1.4);
+			object-position: center 15%;
+		}
+
+		.zoom-pants {
+			transform: scale(1);
+			object-position: center center;
+		}
+
+		.product-card:hover img.zoom-jersey {
+			transform: scale(1.5);
+		}
+
+		.product-card:hover img.zoom-pants {
+			transform: scale(1.05);
+		}
+
+		.card-info {
+			padding: 30px;
+			text-align: center;
+			flex-grow: 1;
+			display: flex;
+			flex-direction: column;
+			justify-content: space-between;
+		}
+
+		.card-info h3 {
+			margin: 0 0 10px 0;
+			color: var(--primary);
+			font-size: 1.4rem;
+		}
+
+		.card-info p {
+			font-size: 1rem;
+			color: #ccc;
+			margin-bottom: 25px;
+		}
+
+		.sub-btn {
+			display: inline-block;
+			padding: 14px 28px;
+			background-color: white;
+			color: black;
+			text-decoration: none;
+			font-weight: 800;
+			border-radius: 10px;
+			transition: 0.2s;
+			text-transform: uppercase;
+			font-size: 0.9rem;
+		}
+
+		.sub-btn:hover {
+			background-color: var(--primary);
+		}
+
+		.sold-banner {
+			position: absolute;
+			top: 50%;
+			left: 50%;
+			transform: translate(-50%, -50%) rotate(-10deg); /* Középre helyezi és kicsit elforgatja */
+			background-color: rgba(0, 0, 0, 0.7); /* Fekete, nem teljesen átlátszó sáv */
+			color: #ff0000; /* Piros szöveg */
+			width: 100%; /* Végigéri a kártyát */
+			text-align: center;
+			padding: 15px 0; /* Vastagabb sáv */
+			font-weight: 900;
+			font-size: 24px; /* Jóval nagyobb szöveg */
+			text-transform: uppercase;
+			letter-spacing: 3px;
+			z-index: 10;
+			pointer-events: none;
+			box-shadow: 0 0 15px rgba(0,0,0,0.5);
+			border-top: 2px solid #ff0000; /* Opcionális: piros szegély a sávnak */
+			border-bottom: 2px solid #ff0000;
+		}
+
+
+		/* Biztosítsd, hogy a konténer relatív legyen */
+		.img-container {
+			position: relative;
+		}
+
+		.product-card.active {
+			border-color: var(--primary);
+			transform: translateY(-8px);
+		}
+
+	</style>
 </head>
+
 <body>
 
-<div class="language-selector">
-<select id="languageSelect">
-<option value="hu">Magyar</option>
-<option value="en">English</option>
-</select>
-</div>
+	<div class="lang-picker">
+		<select id="langSwitch" onchange="updateLanguage()">
+			<option value="hu">Magyar</option>
+			<option value="en">English</option>
+		</select>
+	</div>
 
-<div class="hero">
-<div class="hero-content">
-<img src="logo.png" class="logo">
-<h1 data-text-hu="ÚJ DROP" data-text-en="NEW DROP">ÚJ DROP</h1>
-<p data-text-hu="Minden ruhából csak 1 DB VAN!" data-text-en="Only 1 piece of each item!">Minden ruhából csak 1 DB VAN!</p>
-<button data-text-hu="VÁSÁROLJ MOST!" data-text-en="SHOP NOW!" onclick="scrollToProducts()">VÁSÁROLJ MOST!</button>
-</div>
-</div>
+	<a href="https://www.vinted.hu/member/177769180/items" class="vinted-link" data-en="OUR VINTED" data-hu="VINTEDÜNK">
+		VINTEDÜNK
+	</a>
 
-<header id="header">BRAVELLEWEAR</header>
-<div class="rating" id="rating">10+ elégedett vásárló ⭐⭐⭐⭐⭐</div>
+	<div class="product-grid">
+        
+                <!-- TRAPSTAR MEZ -->
+        <div class="product-card">
+            <div class="img-container">
+                <a href="https://www.vinted.hu/items/8385258848-trapstar-london-monogram-football-jersey" target="_blank">
+                    <img src="https://images1.vinted.net/t/06_0250c_7bepaYsgdEtQp6aW2PPVujUj/f800/1773515582.webp?s=a91eb3375aa38bcf701e53972986792b632525aa" class="zoom-jersey" alt="Trapstar Jersey">
+                </a>
+            </div>
+            <div class="card-info">
+                <h3 data-en="Trapstar Jersey" data-hu="Trapstar Mez">Trapstar Mez</h3>
+                <p>
+                    <span data-en="Size: S" data-hu="Méret: S">Méret: S</span><br>
+                    <strong data-en="Price: $24.68" data-hu="Ár: 7 990 Ft">Ár: 7 990 Ft</strong>
+                </p>
+                <a href="https://www.vinted.hu/items/8385258848-trapstar-london-monogram-football-jersey" class="sub-btn" data-en="Buy Now" data-hu="Megveszem">Megveszem</a>
+            </div>
+        </div>
 
-<div class="filters">
-<button onclick="filterCategory('all')" class="active" data-text-hu="Összes" data-text-en="All">Összes</button>
-<button onclick="filterCategory('Puloverek')" data-text-hu="Pulóverek" data-text-en="Sweaters">Pulóverek</button>
-<button onclick="filterCategory('Sapkak')" data-text-hu="Sapkák" data-text-en="Caps">Sapkák</button>
-<button onclick="filterCategory('Szettek')" data-text-hu="Szettek" data-text-en="Sets">Szettek</button>
-<button onclick="filterCategory('Nadragok')" data-text-hu="Nadrágok" data-text-en="Pants">Nadrágok</button>
-<button onclick="filterCategory('Mezek')" data-text-hu="Mezek" data-text-en="Jerseys">Mezek</button>
-<button onclick="filterCategory('Cipok')" data-text-hu="Cipők" data-text-en="Shoes">Cipők</button>
-</div>
+        <!-- DENIM TEARS PANTS -->
+        <div class="product-card">
+            <div class="img-container">
+                <a href="https://www.vinted.hu/items/8371240738-denim-tears-pants" target="_blank">
+                    <img src="https://images1.vinted.net/t/05_01e00_RsvWPAyBxWoBfAWr8rCNXHUc/f800/1773515696.webp?s=0aac31ca8e62940523a361b6bffff0936bf739db" class="zoom-pants" alt="Denim Tears Pants">
+                </a>
+            </div>
+            <div class="card-info">
+                <h3 data-en="Denim Tears Pants" data-hu="Denim Tears Nadrág">Denim Tears Nadrág</h3>
+                <p>
+                    <span data-en="Size: M" data-hu="Méret: M">Méret: M</span><br>
+                    <strong data-en="Price: $21.59" data-hu="Ár: 6 990 Ft">Ár: 6 990 Ft</strong>
+                </p>
+                <a href="https://www.vinted.hu/items/8371240738-denim-tears-pants" class="sub-btn" data-en="Buy Now" data-hu="Megveszem">Megveszem</a>
+            </div>
+        </div>
 
-<div class="products">
+        <!-- NIKE TN AIR MAX BEIGE -->
+        <div class="product-card">
+            <div class="img-container">
+                <a href="https://www.vinted.hu/items/8375976406-nike-tn-air-max-beige" target="_blank">
+                    <img src="https://images1.vinted.net/t/06_017df_iUfu9sq9CjPNuDe1LUPoen6c/f800/1773515795.webp?s=2b039b1cbf01400d08b07a32a9d03f919f781175" class="zoom-pants" alt="Nike TN Air Max Beige">
+                </a>
+            </div>
+            <div class="card-info">
+                <h3 data-en="Nike TN Air Max Beige" data-hu="Nike TN Air Max Beige">Nike TN Air Max Beige</h3>
+                <p>
+                    <span data-en="Size: 41 EUR" data-hu="Méret: 41 EUR">Méret: 41 EUR</span><br>
+                    <strong data-en="Price: $77.18" data-hu="Ár: 24 990Ft">Ár: 24 990Ft</strong>
+                </p>
+                <a href="https://www.vinted.hu/items/8375976406-nike-tn-air-max-beige" class="sub-btn" data-en="Buy Now" data-hu="Megveszem">Megveszem</a>
+            </div>
+        </div>
 
-<!-- Pulóverek -->
-<div class="card" data-category="Puloverek" data-title-hu="Ralph Lauren Sweater" data-title-en="Ralph Lauren Sweater" data-desc-hu="Street classic" data-desc-en="Street classic" onclick="go('https://www.vinted.hu/items/8484249688-sweater-ralph-lauren-sport-green')">
-<span class="badge">LIMITED</span>
-<img src="https://images1.vinted.net/t/01_0191d_BYUEN84oHm56MB31HYrKr1vv/f800/1774639172.webp?s=335447a575c6088b47c8c9449f13182a674410bc">
-<div class="overlay"><h3>Ralph Lauren Sweater</h3><p>Street classic</p></div>
-</div>
+        <!-- Corteiz 5 Star Cap Pink -->
+        <div class="product-card">
+            <div class="img-container">
+                <a href="https://www.vinted.hu/items/8371229179-corteiz-5-star-cap-pink" target="_blank">
+                    <img src="https://images1.vinted.net/t/05_0172e_GLRLwzf6q6TmpcVSLMEDJa3n/f800/1773515920.webp?s=2cd093bdf43dc4cde6b357de4ea13d4062cbe517" class="zoom-pants" alt="Nike TN Air Max Beige">
+                </a>
+            </div>
+            <div class="card-info">
+                <h3 data-en="Corteiz 5 Star Cap Pink" data-hu="Corteiz 5 Star Sapka Rózsaszín">Corteiz 5 Star Sapka Rózsaszín</h3>
+                <p>
+                    <span data-en=" Size:55-60 Cm" data-hu="Méret: 55-60 Cm">Méret: 55-60 Cm</span><br>
+                    <strong data-en="Price: $21.59" data-hu="Ár: 6 990Ft">Ár: 6 990Ft</strong>
+                </p>
+                <a href="https://www.vinted.hu/items/8371229179-corteiz-5-star-cap-pink" class="sub-btn" data-en="Buy Now" data-hu="Megveszem">Megveszem</a>
+            </div>
+        </div>
+        
+        <!-- Sprayground Táska -->
+		<div class="product-card">
+			<div class="img-container" style="position: relative; overflow: hidden;">
+				<img src="https://images1.vinted.net/t/06_0010f_EtGhmV2UAJ2smhvwcBGxWyc1/f800/1773516205.webp?s=c2678cb096c3544075276a1626240bfdbe6ff58d" class="zoom-pants" alt="Sprayground Backpack">
+				<!-- ELADVA FELIRAT -->
+				<div class="sold-banner" data-en="SOLD" data-hu="ELADVA">ELADVA</div>
+			</div>
+			<div class="card-info">
+				<h3 data-en="Sprayground Backpack" data-hu="Sprayground Táska">Sprayground Táska</h3>
+				<p>
+					<span data-en=" Size: Changable" data-hu="Méret: Változtatható">Méret: Változtatható</span><br>
+					<strong data-en="Price: $34.34" data-hu="Ár: 11 118Ft">Ár: 11 118Ft</strong>
+				</p>
+				<a class="sub-btn" style="background: #ccc;" data-en="SOLD" data-hu="ELADVA">ELADVA</a>
+			</div> 
+		</div>
 
-<div class="card" data-category="Puloverek" data-title-hu="Off-White Sweatshirt" data-title-en="Off-White Sweatshirt" data-desc-hu="Luxury drip" data-desc-en="Luxury drip" onclick="go('https://www.vinted.hu/items/8484288729-sweatshirt-off-white-seasonal')">
-<span class="badge">LIMITED</span>
-<img src="https://images1.vinted.net/t/06_01691_iuXt8HY1DCDKtgvabEFRsiBU/f800/1774730945.webp?s=2bdd3fb11855429baa8b989d6dd7e6dafd458fd5">
-<div class="overlay"><h3>Off-White Sweatshirt</h3><p>Luxury drip</p></div>
-</div>
 
-<!-- Mezek -->
-<div class="card" data-category="Mezek" data-title-hu="Trapstar Jersey" data-title-en="Trapstar Jersey" data-desc-hu="Ritka darab" data-desc-en="Rare piece" onclick="go('https://www.vinted.hu/items/8385258848-trapstar-london-monogram-football-jersey')">
-<span class="badge">LIMITED</span>
-<img src="https://images1.vinted.net/t/06_0250c_7bepaYsgdEtQp6aW2PPVujUj/f800/1773515582.webp?s=a91eb3375aa38bcf701e53972986792b632525aa">
-<div class="overlay"><h3>Trapstar Jersey</h3><p>Ritka darab</p></div>
-</div>
+        <!-- Denim Tears Set -->
+        <div class="product-card">
+            <div class="img-container">
+                <a href="https://www.vinted.hu/items/8371207459-denim-tears-tracksuit" target="_blank">
+                    <img src="https://images1.vinted.net/t/06_021cd_myEZ7oK6sG7xJXPm536kxU3f/f800/1773516049.webp?s=f5231235784aa994bb062e6b269dc038b112c95d" class="zoom-pants" alt="Nike TN Air Max Beige">
+                </a>
+            </div>
+            <div class="card-info">
+                <h3 data-en="Denim Tears Set" data-hu="Denim Tears Szett">Denim Tears Szett</h3>
+                <p>
+                    <span data-en=" Size: M" data-hu="Méret: M">Méret: M</span><br>
+                    <strong data-en="Price: $52.47" data-hu="Ár: 16 990Ft">Ár: 16 990Ft</strong>
+                </p>
+                <a href="https://www.vinted.hu/items/8371207459-denim-tears-tracksuit" class="sub-btn" data-en="Buy Now" data-hu="Megveszem">Megveszem</a>
+            </div>
+        </div>
 
-<!-- Szettek -->
-<div class="card" data-category="Szettek" data-title-hu="Denim Tears Tracksuit" data-title-en="Denim Tears Tracksuit" data-desc-hu="Teljes szett" data-desc-en="Full set" onclick="go('https://www.vinted.hu/items/8371207459-denim-tears-tracksuit')">
-<span class="badge">LIMITED</span>
-<img src="https://images1.vinted.net/t/06_021cd_myEZ7oK6sG7xJXPm536kxU3f/f800/1773516049.webp?s=f5231235784aa994bb062e6b269dc038b112c95d">
-<div class="overlay"><h3>Denim Tears Tracksuit</h3><p>Teljes szett</p></div>
-</div>
+		<!-- Ralph Lauren Sweater -->
+        <div class="product-card">
+            <div class="img-container">
+                <a href="https://www.vinted.hu/items/8484249688-sweater-ralph-lauren-sport-green" target="_blank">
+                    <img src="https://images1.vinted.net/t/01_0191d_BYUEN84oHm56MB31HYrKr1vv/f800/1774639172.webp?s=335447a575c6088b47c8c9449f13182a674410bc" class="zoom-pants" alt="Nike TN Air Max Beige">
+                </a>
+            </div>
+            <div class="card-info">
+                <h3 data-en="Ralph Lauren Sweater" data-hu="Ralph Lauren Pullóver">Ralph Lauren Pullóver</h3>
+                <p>
+                    <span data-en=" Size: S" data-hu="Méret: S">Méret: M</span><br>
+                    <strong data-en="Price: $46.30" data-hu="Ár: 14 990Ft">Ár: 14 990Ft</strong>
+                </p>
+                <a href="https://www.vinted.hu/items/8484249688-sweater-ralph-lauren-sport-green" class="sub-btn" data-en="Buy Now" data-hu="Megveszem">Megveszem</a>
+            </div>
+        </div>
+		
+		<!-- Off-white Seasonal -->
+        <div class="product-card">
+            <div class="img-container">
+                <a href="https://www.vinted.hu/items/8484288729-sweatshirt-off-white-seasonal" target="_blank">
+                    <img src="https://images1.vinted.net/t/06_016b7_NzhtaPbfQvRqvmiVPmcNguus/f800/1774636722.webp?s=627ca9a1fe225865e2ffa4314456c1b09d0fbac4" class="zoom-pants" alt="Nike TN Air Max Beige">
+                </a>
+            </div>
+            <div class="card-info">
+                <h3 data-en="Off-White Seasonal Sweatshirt" data-hu="Off-White Seasonal Pullóver">Off-White Seasonal Pullóver</h3>
+                <p>
+                    <span data-en=" Size: S" data-hu="Méret: S">Méret: S</span><br>
+                    <strong data-en="$185.28" data-hu="Ár: 59 990Ft">Ár: 59 990Ft</strong>
+                </p>
+                <a href="https://www.vinted.hu/items/8484288729-sweatshirt-off-white-seasonal" class="sub-btn" data-en="Buy Now" data-hu="Megveszem">Megveszem</a>
+            </div>
+        </div>
 
-<!-- Nadrágok -->
-<div class="card" data-category="Nadragok" data-title-hu="Denim Tears Pants" data-title-en="Denim Tears Pants" data-desc-hu="Masszív stílus" data-desc-en="Heavy style" onclick="go('https://www.vinted.hu/items/8371240738-denim-tears-pants')">
-<span class="badge">LIMITED</span>
-<img src="https://images1.vinted.net/t/06_00f5c_g6acacrBxAaXcRfBsoNQoqMC/f800/1773515696.webp?s=6af74adafc403fe13701a1c1e66a62ecffae6fb5">
-<div class="overlay"><h3>Denim Tears Pants</h3><p>Masszív stílus</p></div>
-</div>
 
-<!-- Sapkák -->
-<div class="card" data-category="Sapkak" data-title-hu="Corteiz Cap" data-title-en="Corteiz Cap" data-desc-hu="Limitált vibe" data-desc-en="Limited vibe" onclick="go('https://www.vinted.hu/items/8371229179-corteiz-5-star-cap-pink-edition')">
-<span class="badge">LIMITED</span>
-<img src="https://images1.vinted.net/t/05_0172e_GLRLwzf6q6TmpcVSLMEDJa3n/f800/1773515920.webp?s=2cd093bdf43dc4cde6b357de4ea13d4062cbe517">
-<div class="overlay"><h3>Corteiz Cap</h3><p>Limitált vibe</p></div>
-</div>
 
-<!-- Cipők -->
-<div class="card" data-category="Cipok" data-title-hu="Nike TN Air Max" data-title-en="Nike TN Air Max" data-desc-hu="Napi flex" data-desc-en="Daily flex" onclick="go('https://www.vinted.hu/items/8375976406-nike-tn-air-max-beige')">
-<span class="badge">LIMITED</span>
-<img src="https://images1.vinted.net/t/06_017df_iUfu9sq9CjPNuDe1LUPoen6c/f800/1773515795.webp?s=2b039b1cbf01400d08b07a32a9d03f919f781175">
-<div class="overlay"><h3>Nike TN Air Max</h3><p>Napi flex</p></div>
-</div>
 
-</div>
 
-<script>
-function go(link){ window.open(link,"_blank"); }
-function scrollToProducts(){ window.scrollTo({top:document.querySelector('.products').offsetTop, behavior:'smooth'});}
-document.getElementById('header').addEventListener('click', function(e){ if(e.target.tagName.toLowerCase()!=='select'){go('https://www.vinted.com/member/177769180');} });
-function filterCategory(cat){ const cards=document.querySelectorAll('.card'); const buttons=document.querySelectorAll('.filters button'); buttons.forEach(btn=>btn.classList.remove('active')); event.target.classList.add('active'); cards.forEach(card=>{ card.style.display=(cat==='all'||card.dataset.category===cat)?'block':'none'; }); }
-document.getElementById('languageSelect').addEventListener('change', function(){
-const lang=this.value;
-document.querySelectorAll('.filters button').forEach(btn=>{btn.innerText=(lang==='hu')?btn.dataset.textHu:btn.dataset.textEn;});
-document.querySelectorAll('.card').forEach(card=>{card.querySelector('h3').innerText=(lang==='hu')?card.dataset.titleHu:card.dataset.titleEn; card.querySelector('p').innerText=(lang==='hu')?card.dataset.descHu:card.dataset.descEn; });
-document.querySelectorAll('.hero-content [data-text-hu]').forEach(el=>{el.innerText=(lang==='hu')?el.dataset.textHu:el.dataset.textEn;});
-document.getElementById('rating').innerText=(lang==='hu')?'10+ elégedett vásárló ⭐⭐⭐⭐⭐':'10+ satisfied customers ⭐⭐⭐⭐⭐';
-});
-</script>
+    </div>
+
+
+	<script>
+
+		function updateLanguage() {
+
+			const lang = document.getElementById('langSwitch').value;
+
+			document.querySelectorAll('[data-en]').forEach(el => {
+
+				el.innerText = el.getAttribute(`data-${lang}`);
+
+			});
+
+		}
+
+	</script>
+
+	<script>
+		const isMobile = window.innerWidth <= 768; // 📱 detect phone
+
+		if (isMobile) {
+
+			const cards = document.querySelectorAll('.product-card');
+
+			function updateActiveCard() {
+				let closestCard = null;
+				let closestOffset = Infinity;
+
+				const screenCenter = window.innerHeight / 2;
+
+				cards.forEach(card => {
+					const rect = card.getBoundingClientRect();
+					const cardCenter = rect.top + rect.height / 2;
+
+					const offset = Math.abs(screenCenter - cardCenter);
+
+					if (offset < closestOffset) {
+						closestOffset = offset;
+						closestCard = card;
+					}
+				});
+
+				cards.forEach(card => card.classList.remove('active'));
+				if (closestCard) closestCard.classList.add('active');
+			}
+
+			window.addEventListener('scroll', updateActiveCard);
+			window.addEventListener('load', updateActiveCard);
+		}
+	</script>
+
+	
 
 </body>
 </html>
