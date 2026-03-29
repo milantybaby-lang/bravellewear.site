@@ -204,15 +204,18 @@
 		}
 
 
-		/* Biztosítsd, hogy a konténer relatív legyen */
-		.img-container {
-			position: relative;
+		@media (max-width: 768px) {
+			html, body {
+				scroll-snap-type: y mandatory;
+			}
+
+			.product-card {
+				scroll-snap-align: center;
+				scroll-snap-stop: always;
+			}
 		}
 
-		.product-card.active {
-			border-color: var(--primary);
-			transform: translateY(-8px);
-		}
+
 
 	</style>
 </head>
@@ -393,56 +396,29 @@
 	</script>
 
 	<script>
-		const isMobile = window.innerWidth <= 768;
+		const mobileQuery = window.matchMedia("(max-width: 768px)");
 
-		if (isMobile) {
-
-			const cards = document.querySelectorAll('.product-card');
-			let isSnapping = false;
-
-			function updateActiveCard() {
-				if (isSnapping) return;
-
-				let closestCard = null;
-				let closestOffset = Infinity;
-
-				const screenCenter = window.innerHeight / 2;
-
-				cards.forEach(card => {
-					const rect = card.getBoundingClientRect();
-					const cardCenter = rect.top + rect.height / 2;
-
-					const offset = Math.abs(screenCenter - cardCenter);
-
-					if (offset < closestOffset) {
-						closestOffset = offset;
-						closestCard = card;
-					}
-				});
-
-				cards.forEach(card => card.classList.remove('active'));
-
-				if (closestCard) {
-					closestCard.classList.add('active');
-
-					// 🔥 SNAP TO CARD
-					isSnapping = true;
-
-					closestCard.scrollIntoView({
-						behavior: "smooth",
-						block: "center"
+		function initMobileScroll() {
+			if (mobileQuery.matches) {
+				// Itt jön az IntersectionObserver kód, amit az előbb írtam
+				const cards = document.querySelectorAll('.product-card');
+				const observer = new IntersectionObserver((entries) => {
+					entries.forEach(entry => {
+						if (entry.isIntersecting) {
+							cards.forEach(c => c.classList.remove('active'));
+							entry.target.classList.add('active');
+						}
 					});
+				}, { threshold: 0.6 });
 
-					// prevent infinite snapping loop
-					setTimeout(() => {
-						isSnapping = false;
-					}, 400);
-				}
+				cards.forEach(card => observer.observe(card));
 			}
-
-			window.addEventListener('scroll', updateActiveCard);
-			window.addEventListener('load', updateActiveCard);
 		}
+
+		// Futás betöltéskor
+		initMobileScroll();
+
+
 	</script>
 </body>
 </html>
